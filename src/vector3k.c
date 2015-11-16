@@ -21,12 +21,10 @@
 //#include "em_ebi.h"
 
 #include "ebi.h"
+#include "program.h"
 #include "buttons.h"
 
-void setupV3k()
-{
-
-}
+void write_program();
 
 
 /**************************************************************************//**
@@ -41,26 +39,42 @@ int main(void)
 
   buttons_init();
 
-  ebi_write(0x0,0xF0FF);
-  ebi_write(0x1,0x0002);
+  write_program();
 
-  ebi_write(0x10, 0x0000);
-  ebi_write(0x10, 0xf000);
+//
+//  ebi_write(0x0,0b10101);
+//  ebi_write(0x1,0b11100);
+//
+//  ebi_write(0x10, 0xff00);
+//
+//  uint16_t result = ebi_read(0x0000);
+//  uint16_t result1 = ebi_read(0x0001);
+//  uint16_t result2 = ebi_read(0x0002);
+//  uint16_t result3 = ebi_read(0x0003);
+//  int addr;
+//
+//  if (result == 3){
+//	  addr = 0xff00;
+//  }else{
+//	  addr = 0x00ff;
+//  }
 
-  uint32_t result = ebi_read(0x0005);
-  int addr;
 
-  if (result == 3){
-	  addr = 0xff00;
-  }else{
-	  addr = 0x00ff;
-  }
 
-  // Set CS1 to give controll to FPGA
-  GPIO_PinModeSet( gpioPortD, 10, gpioModePushPull, 1 );
-  GPIO_PinOutSet(gpioPortD, 10);
   /* Infinite loop */
   while (1) {
 
   }
+}
+
+void write_program()
+{
+	for(uint16_t i = 0; i < size; i++)
+	{
+		ebi_write(i, program_data[i]);
+	}
+
+	// Set CS1 to give control to FPGA
+	GPIO_PinModeSet( gpioPortD, 10, gpioModePushPull, 1 );
+	GPIO_PinOutSet(gpioPortD, 10);
 }

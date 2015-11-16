@@ -19,6 +19,6 @@
 
 extern void ebi_init();
 extern void ebi_write(int address, uint16_t value);
-extern uint32_t ebi_read(int address);
+extern uint16_t ebi_read(int address);
 
 #endif /* EBI_H_ */

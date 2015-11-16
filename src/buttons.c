@@ -6,6 +6,7 @@
  */
 
 #include "buttons.h"
+#include "ebi.h"
 
 extern void buttons_init()
 {
@@ -50,11 +51,17 @@ void interrupt_handler() {
 
 	//Zoom In
 	if (GPIO_PinInGet(gpioPortD, 12) == 0) {
-		GPIO_PinOutToggle(gpioPortA, 7);
+		//read addr 0
+
+		GPIO_PortOutSetVal(gpioPortA, ebi_read(0x000) << 7, 0b11111 << 7);
+		//GPIO_PinOutToggle(gpioPortA, 7);
 	}
 	//Zoom Out
 	else if (GPIO_PinInGet(gpioPortD, 13) == 0) {
-		GPIO_PinOutToggle(gpioPortA, 8);
+
+		GPIO_PortOutSetVal(gpioPortA, ebi_read(0x001) << 7, 0b11111 << 7);
+
+		//GPIO_PinOutToggle(gpioPortA, 8);
 	}
 	//Joy Down
 	else if (GPIO_PinInGet(gpioPortC, 0) == 1) {
@@ -79,13 +86,32 @@ void interrupt_handler() {
 }
 
 void GPIO_ODD_IRQHandler(void) {
-  /* clear flag for PE1 interrupt */
-  GPIO_IntClear(0xff);
-  interrupt_handler();
+	/* clear flag for PE1 interrupt */
+	uint32_t flag = GPIO_IntGet();
+	interrupt_handler();
+	GPIO_IntClear(flag);
 }
 
 void GPIO_EVEN_IRQHandler(void) {
-  /* clear flag for PE1 interrupt */
-  GPIO_IntClear(0xff);
-  interrupt_handler();
+	/* clear flag for PE1 interrupt */
+	uint32_t flag = GPIO_IntGet();
+	interrupt_handler();
+	GPIO_IntClear(flag);
+}
+
+void GPIO_EFM_Clear()
+{
+	GPIO_PinOutClear(gpioPortA, 7);
+	GPIO_PinOutClear(gpioPortA, 8);
+	GPIO_PinOutClear(gpioPortA, 9);
+	GPIO_PinOutClear(gpioPortA, 10);
+	GPIO_PinOutClear(gpioPortA, 11);
+}
+
+void GPIO_Harness_Set(uint8_t data)
+{
+	for(int i = 0; i < 6 ; i++)
+	{
+
+	}
 }

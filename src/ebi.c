@@ -100,19 +100,23 @@ extern void ebi_init()
 	    ebiConfig.aLow = ebiALowA0;
 	    ebiConfig.aHigh = ebiAHighA19;
 
+	    /* set polarity to active low */
+	    ebiConfig.wePolarity = ebiActiveLow;
+	    ebiConfig.rePolarity = ebiActiveLow;
+
 	    /* Address Setup and hold time */
-	    ebiConfig.addrHoldCycles  = 3;
-	    ebiConfig.addrSetupCycles = 3;
+	    ebiConfig.addrHoldCycles  = 0;
+	    ebiConfig.addrSetupCycles = 0;
 
 
 	    /* Read cycle times */
 	    ebiConfig.readStrobeCycles = 3;
 	    ebiConfig.readHoldCycles   = 3;
-	    ebiConfig.readSetupCycles  = 3;
+	    ebiConfig.readSetupCycles  = 10;
 
 	    /* Write cycle times */
-	    ebiConfig.writeStrobeCycles = 3;
-	    ebiConfig.writeHoldCycles   = 3;
+	    ebiConfig.writeStrobeCycles = 7;
+	    ebiConfig.writeHoldCycles   = 0;
 	    ebiConfig.writeSetupCycles  = 3;
 
 	    /* Configure EBI bank 0 */
@@ -122,10 +126,10 @@ extern void ebi_init()
 
 extern void ebi_write(int address, uint16_t value)
 {
-	*(uint16_t *)(BANK0_BASE_ADDR) = value;
+	*(uint16_t *)(BANK0_BASE_ADDR + (address << 1)) = value;
 }
 
-extern uint32_t ebi_read(int address)
+extern uint16_t ebi_read(int address)
 {
-	return *(volatile uint16_t*)(BANK0_BASE_ADDR);
+	return *(volatile uint16_t*)(BANK0_BASE_ADDR + (address << 1));
 }
