@@ -14,7 +14,7 @@ extern void buttons_init()
 	CMU_ClockEnable(cmuClock_GPIO, true);
 
 	/* Configure GPIO Harness */
-	GPIO_PinModeSet(gpioPortA, 7, gpioModePushPull, 1);
+	GPIO_PinModeSet(gpioPortA, 7, gpioModePushPull, 0);
 	GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1);
 	GPIO_PinModeSet(gpioPortA, 9, gpioModePushPull, 1);
 	GPIO_PinModeSet(gpioPortA, 10, gpioModePushPull, 1);
@@ -37,9 +37,9 @@ extern void buttons_init()
 	NVIC_EnableIRQ(GPIO_EVEN_IRQn);
 
 	/* Configure Zoom buttons interrupt on falling edge */
-	GPIO_IntConfig(gpioPortD, 12, false, true, true);
-	GPIO_IntConfig(gpioPortD, 13, false, true, true);
-	/* Configure Zoom buttons interrupt on rising edge */
+	GPIO_IntConfig(gpioPortD, 12, true, true, true);
+	GPIO_IntConfig(gpioPortD, 13, true, true, true);
+	/* Configure Joy buttons interrupt on rising edge */
 	GPIO_IntConfig(gpioPortC, 0, true, false, true);
 	GPIO_IntConfig(gpioPortC, 1, true, false, true);
 	GPIO_IntConfig(gpioPortC, 2, true, false, true);
@@ -47,40 +47,38 @@ extern void buttons_init()
 	GPIO_IntConfig(gpioPortC, 4, true, false, true);
 }
 
-void interrupt_handler() {
+void interrupt_handler(uint32_t flag) {
 
-	//Zoom In
-	if (GPIO_PinInGet(gpioPortD, 12) == 0) {
-		//read addr 0
-
-		GPIO_PortOutSetVal(gpioPortA, ebi_read(0x000) << 7, 0b11111 << 7);
-		//GPIO_PinOutToggle(gpioPortA, 7);
-	}
 	//Zoom Out
-	else if (GPIO_PinInGet(gpioPortD, 13) == 0) {
-
-		GPIO_PortOutSetVal(gpioPortA, ebi_read(0x001) << 7, 0b11111 << 7);
-
-		//GPIO_PinOutToggle(gpioPortA, 8);
+	if (GPIO_PinInGet(PORT_ZOOM, ZOOM_OUT) == 0) {
+		GPIO_PinOutSet(PORT_GPIO, SIG_GPIO0);
+		//on_button_press(ZOOM_OUT);
+	}else
+	{
+		GPIO_PinOutClear(PORT_GPIO, SIG_GPIO0);
+	}
+	//Zoom In
+	if (GPIO_PinInGet(gpioPortD, 13) == 0) {
+		//on_button_press(ZOOM_IN);
 	}
 	//Joy Down
-	else if (GPIO_PinInGet(gpioPortC, 0) == 1) {
+	if (GPIO_PinInGet(gpioPortC, 0) == 1) {
 		GPIO_PinOutToggle(gpioPortA, 9);
 	}
 	//Joy Left
-	else if (GPIO_PinInGet(gpioPortC, 1) == 1) {
+	if (GPIO_PinInGet(gpioPortC, 1) == 1) {
 		GPIO_PinOutToggle(gpioPortA, 10);
 	}
 	//Joy Up
-	else if (GPIO_PinInGet(gpioPortC, 2) == 1) {
+	if (GPIO_PinInGet(gpioPortC, 2) == 1) {
 		GPIO_PinOutToggle(gpioPortA, 11);
 	}
 	//Joy Pressed
-	else if (GPIO_PinInGet(gpioPortC, 3) == 1) {
+	if (GPIO_PinInGet(gpioPortC, 3) == 1) {
 		GPIO_PinOutToggle(gpioPortA, 11);
 	}
 	//Joy Right
-	else if (GPIO_PinInGet(gpioPortC, 4) == 1) {
+	if (GPIO_PinInGet(gpioPortC, 4) == 1) {
 		GPIO_PinOutToggle(gpioPortA, 11);
 	}
 }
@@ -88,14 +86,14 @@ void interrupt_handler() {
 void GPIO_ODD_IRQHandler(void) {
 	/* clear flag for PE1 interrupt */
 	uint32_t flag = GPIO_IntGet();
-	interrupt_handler();
+	interrupt_handler(flag);
 	GPIO_IntClear(flag);
 }
 
 void GPIO_EVEN_IRQHandler(void) {
 	/* clear flag for PE1 interrupt */
 	uint32_t flag = GPIO_IntGet();
-	interrupt_handler();
+	interrupt_handler(flag);
 	GPIO_IntClear(flag);
 }
 

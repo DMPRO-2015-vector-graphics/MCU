@@ -26,9 +26,19 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>emlib/em_emu.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/emlib/src/em_emu.c</locationURI>
+		</link>
+		<link>
 			<name>emlib/em_system.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/emlib/src/em_system.c</locationURI>
+		</link>
+		<link>
+			<name>emlib/em_usart.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/emlib/src/em_usart.c</locationURI>
 		</link>
 		<link>
 			<name>CMSIS/efm32gg/startup_gcc_efm32gg.s</name>

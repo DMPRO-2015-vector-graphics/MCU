@@ -18,6 +18,7 @@
 #define BANK1_BASE_ADDR 0x84000000
 
 extern void ebi_init();
+extern void ebi_disable();
 extern void ebi_write(int address, uint16_t value);
 extern uint16_t ebi_read(int address);
 
