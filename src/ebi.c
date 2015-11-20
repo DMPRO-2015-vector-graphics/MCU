@@ -87,8 +87,6 @@ extern void ebi_init()
 	    ebiConfig.csLines     = EBI_CS0;
 	    ebiConfig.mode        = ebiModeD16;
 	    ebiConfig.alePolarity = ebiActiveHigh;
-	    ebiConfig.wePolarity  = ebiActiveLow;
-	    ebiConfig.rePolarity  = ebiActiveLow;
 	    ebiConfig.location    = ebiLocation1;
 	    /* keep blEnable */
 	    ebiConfig.blEnable     = false;
@@ -124,7 +122,7 @@ extern void ebi_init()
 
 }
 
-extern void ebi_write(int address, uint16_t value)
+extern void ebi_write(int address, volatile uint16_t value)
 {
 	*(uint16_t *)(BANK0_BASE_ADDR + (address << 1)) = value;
 }

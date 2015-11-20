@@ -70,10 +70,13 @@ int main(void)
 //  uint8_t id = getID();
 
 #ifdef DEBUG
-  uint16_t result = ebi_read(0x0000);
+  uint16_t result0 = ebi_read(0x0000);
   uint16_t result1 = ebi_read(0x0001);
   uint16_t result2 = ebi_read(0x0002);
   uint16_t result3 = ebi_read(0x0003);
+  uint16_t result4 = ebi_read(0x0004);
+  uint16_t result5 = ebi_read(0x0005);
+  uint16_t result6 = ebi_read(0x0006);
 #endif //DEBUG
 
 
@@ -88,8 +91,8 @@ void write_program()
 	//GPIO_PinModeSet(PORT_DONE, SIG_DONE, gpioModeInput, 1 );
 	GPIO_PinModeSet( gpioPortD, 10, gpioModePushPull, 1 );
 
-	// wait for FPGA to be ready
-	//while(GPIO_PinInGet(PORT_DONE, SIG_DONE) == 1);
+	/* wait for FPGA to be flashed, before writing to SRAM */
+	while(GPIO_PinInGet(PORT_DONE, SIG_DONE) == 1);
 
 	// Clear CS1 to give control to EFM
 	GPIO_PinOutClear(gpioPortD, 10);

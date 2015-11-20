@@ -15,10 +15,10 @@ extern void buttons_init()
 
 	/* Configure GPIO Harness */
 	GPIO_PinModeSet(gpioPortA, 7, gpioModePushPull, 0);
-	GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1);
-	GPIO_PinModeSet(gpioPortA, 9, gpioModePushPull, 1);
-	GPIO_PinModeSet(gpioPortA, 10, gpioModePushPull, 1);
-	GPIO_PinModeSet(gpioPortA, 11, gpioModePushPull, 1);
+	GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 0);
+	GPIO_PinModeSet(gpioPortA, 9, gpioModePushPull, 0);
+	GPIO_PinModeSet(gpioPortA, 10, gpioModePushPull, 0);
+	GPIO_PinModeSet(gpioPortA, 11, gpioModePushPull, 0);
 
 	/* Configure Zoom buttons as input with filter enable */
 	GPIO_PinModeSet(gpioPortD, 12, gpioModeInputPullFilter, 1);
@@ -31,6 +31,9 @@ extern void buttons_init()
 	GPIO_PinModeSet(gpioPortC, 3, gpioModeInputPullFilter, 0);
 	GPIO_PinModeSet(gpioPortC, 4, gpioModeInputPullFilter, 0);
 	GPIO_PinModeSet(gpioPortC, 5, gpioModePushPull, 1);
+
+	/* Configure Done Signal */
+	GPIO_PinModeSet(PORT_DONE, SIG_DONE, gpioModeInput, 1);
 
 	/* Enable GPIO_ODD interrupt vector in NVIC */
 	NVIC_EnableIRQ(GPIO_ODD_IRQn);
@@ -45,6 +48,8 @@ extern void buttons_init()
 	GPIO_IntConfig(gpioPortC, 2, true, false, true);
 	GPIO_IntConfig(gpioPortC, 3, true, false, true);
 	GPIO_IntConfig(gpioPortC, 4, true, false, true);
+	/* Configure Done sig */
+	GPIO_IntConfig(PORT_DONE, SIG_DONE, true, true, true);
 }
 
 void interrupt_handler(uint32_t flag) {
@@ -80,6 +85,12 @@ void interrupt_handler(uint32_t flag) {
 	//Joy Right
 	if (GPIO_PinInGet(gpioPortC, 4) == 1) {
 		GPIO_PinOutToggle(gpioPortA, 11);
+	}
+
+	if( GPIO_PinInGet(PORT_DONE, SIG_DONE) == 0){
+		GPIO_PinOutSet(PORT_GPIO, SIG_GPIO4);
+	}else{
+		GPIO_PinOutClear(PORT_GPIO, SIG_GPIO4);
 	}
 }
 
