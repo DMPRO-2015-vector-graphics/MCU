@@ -13,8 +13,8 @@
 
 typedef enum
 {
-	ZOOM_IN 	= 12,
-	ZOOM_OUT 	= 13,
+	ZOOM_OUT 	= 12,
+	ZOOM_IN 	= 13,
 	JOY_UP 		= 2,
 	JOY_DOWN 	= 0,
 	JOY_LEFT 	= 1,

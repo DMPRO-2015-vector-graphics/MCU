@@ -28,8 +28,8 @@
 
 void write_program();
 
-uint32_t msTicks;
 
+uint32_t msTicks;
 
 void SysTick_Handler(void)
 {
@@ -54,7 +54,7 @@ int main(void)
   /* Chip errata */
   CHIP_Init();
 
-  //CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFRCO);
+  CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFRCO);
 
   /* Setup SysTick Timer for 1 msec interrupts  */
   //if (SysTick_Config(CMU_ClockFreqGet(cmuClock_HF) / 1000)) while (1) ;
@@ -67,27 +67,38 @@ int main(void)
 
   write_program();
 
-//  uint8_t id = getID();
+  //uint8_t id = getID();
 
-#ifdef DEBUG
-  uint16_t result0 = ebi_read(0x0000);
-  uint16_t result1 = ebi_read(0x0001);
-  uint16_t result2 = ebi_read(0x0002);
-  uint16_t result3 = ebi_read(0x0003);
-  uint16_t result4 = ebi_read(0x0004);
-  uint16_t result5 = ebi_read(0x0005);
-  uint16_t result6 = ebi_read(0x0006);
-#endif //DEBUG
+//#ifdef DEBUG
+//  uint16_t result0 = ebi_read(0x0000);
+//  uint16_t result90 = ebi_read(0x0000);
+//  uint16_t result1 = ebi_read(0x0001);
+//  uint16_t result2 = ebi_read(0x0002);
+//  uint16_t result3 = ebi_read(0x0003);
+//  uint16_t result4 = ebi_read(0x0004);
+//  uint16_t result5 = ebi_read(0x0005);
+//  uint16_t result6 = ebi_read(0x0006);
+//#endif //DEBUG
 
 
   /* Infinite loop */
   while (1) {
-
+	  //EMU_EnterEM2();
   }
 }
 
 void write_program()
 {
+
+	  uint16_t program_data[] = {
+	  		0x0820, 0x1111,
+	  		0x345F, 0xFFFF,
+	  		0x385F, 0xFFFF,
+	  		0x1401, 0x1000,
+	  		0x2C00, 0x0000,
+	  		0x0400, 0x0014
+	  };
+
 	//GPIO_PinModeSet(PORT_DONE, SIG_DONE, gpioModeInput, 1 );
 	GPIO_PinModeSet( gpioPortD, 10, gpioModePushPull, 1 );
 
@@ -100,14 +111,19 @@ void write_program()
 	for(uint16_t i = 0; i < size; i++)
 	{
 		ebi_write(i, program_data[i]);
+
 	}
 
-	//ebi_disable();
+
+	ebi_disable();
+
 	GPIO_PinModeSet( gpioPortD,  9, gpioModePushPull, 0);
 	GPIO_PinOutClear(gpioPortD, 9);
 
 	//Set CS1 to give control to FPGA
 	GPIO_PinOutSet(gpioPortD, 10);
+	//Set CS0 low to allow FPGA to read SRAM
+	GPIO_PinOutClear(gpioPortD, 9);
 }
 
 void on_button_press(Button_TypeDef btn)

@@ -33,7 +33,7 @@ extern void buttons_init()
 	GPIO_PinModeSet(gpioPortC, 5, gpioModePushPull, 1);
 
 	/* Configure Done Signal */
-	GPIO_PinModeSet(PORT_DONE, SIG_DONE, gpioModeInput, 1);
+	GPIO_PinModeSet(PORT_DONE, SIG_DONE, gpioModeInputPullFilter, 1);
 
 	/* Enable GPIO_ODD interrupt vector in NVIC */
 	NVIC_EnableIRQ(GPIO_ODD_IRQn);
@@ -66,26 +66,26 @@ void interrupt_handler(uint32_t flag) {
 	if (GPIO_PinInGet(gpioPortD, 13) == 0) {
 		//on_button_press(ZOOM_IN);
 	}
-	//Joy Down
-	if (GPIO_PinInGet(gpioPortC, 0) == 1) {
-		GPIO_PinOutToggle(gpioPortA, 9);
-	}
-	//Joy Left
-	if (GPIO_PinInGet(gpioPortC, 1) == 1) {
-		GPIO_PinOutToggle(gpioPortA, 10);
-	}
-	//Joy Up
-	if (GPIO_PinInGet(gpioPortC, 2) == 1) {
-		GPIO_PinOutToggle(gpioPortA, 11);
-	}
-	//Joy Pressed
-	if (GPIO_PinInGet(gpioPortC, 3) == 1) {
-		GPIO_PinOutToggle(gpioPortA, 11);
-	}
-	//Joy Right
-	if (GPIO_PinInGet(gpioPortC, 4) == 1) {
-		GPIO_PinOutToggle(gpioPortA, 11);
-	}
+//	//Joy Down
+//	if (GPIO_PinInGet(gpioPortC, 0) == 1) {
+//		GPIO_PinOutToggle(gpioPortA, 9);
+//	}
+//	//Joy Left
+//	if (GPIO_PinInGet(gpioPortC, 1) == 1) {
+//		GPIO_PinOutToggle(gpioPortA, 10);
+//	}
+//	//Joy Up
+//	if (GPIO_PinInGet(gpioPortC, 2) == 1) {
+//		GPIO_PinOutToggle(gpioPortA, 11);
+//	}
+//	//Joy Pressed
+//	if (GPIO_PinInGet(gpioPortC, 3) == 1) {
+//		GPIO_PinOutToggle(gpioPortA, 11);
+//	}
+//	//Joy Right
+//	if (GPIO_PinInGet(gpioPortC, 4) == 1) {
+//		GPIO_PinOutToggle(gpioPortA, 11);
+//	}
 
 	if( GPIO_PinInGet(PORT_DONE, SIG_DONE) == 0){
 		GPIO_PinOutSet(PORT_GPIO, SIG_GPIO4);
